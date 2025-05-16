@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Maintenance Team Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .nav-right {
+            margin-top: 10px;
+        }
+        .nav-right .btn-link {
+            margin-left: 15px;
+            color: #0077cc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .nav-right .btn-link:hover {
+            text-decoration: underline;
+        }
+        .alert-section h2 {
+            color: #cc0000;
+            border-bottom: 2px solid #cc0000;
+            padding-bottom: 5px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+        .alert-card, .request-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .alert-card { border-left: 6px solid #cc0000; }
+        .alert-card h3 { color: #cc0000; margin-top: 0; }
+        .request-card h3 { margin-top: 0; color: #333; }
+        .request-card p { margin: 5px 0; color: #555; }
+        .status {
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+            font-weight: bold;
+        }
+        .Pending   { background-color: #ffe5e5; color: #cc0000; }
+        .InProgress { background-color: #fff0b3; color: #b38f00; }
+        .Resolved  { background-color: #d6f5d6; color: #339933; }
+        .Escalated { background-color: #f8d7da; color: #721c24; }
+        .countdown {
+            font-size: 0.9em;
+            margin-left: 10px;
+            color: #555;
+        }
+        .logout-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .logout-btn:hover { background-color: #e60000; }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-header">
+        <h1>Maintenance Team Dashboard</h1>
+        <p>Welcome! Manage alerts and maintenance requests below.</p>
+        <div class="nav-right">
+            <a href="{% url 'profile' %}" class="btn-link">My Profile</a>
+            <a href="{% url 'logout' %}" class="btn-link">Logout</a>
+        </div>
+    </div>
+
+    <!-- Admin Alerts -->
+    <div class="alert-section">
+      <h2>Admin Alerts</h2>
+      {% for req in maintenance_requests %}
+        {% if req.status == 'Alert' %}
+          <div class="alert-card">
+            <h3>ALERT</h3>
+            <p><strong>From Admin:</strong> {{ req.message }}</p>
+            <p><strong>Sent At:</strong> {{ req.created_at|date:"F d, Y H:i" }}</p>
+            {% if req.location %}
+              <p><strong>Location:</strong> {{ req.location }}</p>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% empty %}
+        <p>No admin alerts.</p>
+      {% endfor %}
+    </div>
+
+    <!-- Regular Requests -->
+    {% for req in maintenance_requests %}
+      {% if req.status != 'Alert' %}
+        <div class="request-card" 
+             data-created-at="{{ req.created_at.isoformat }}" 
+             id="req-{{ req.id }}">
+          <h3>Reported by: {{ req.requester.username }}</h3>
+          <p><strong>Problem:</strong> {{ req.message }}</p>
+          {% if req.location %}
+            <p><strong>Location:</strong> {{ req.location }}</p>
+          {% endif %}
+          <p><strong>Reported At:</strong> {{ req.created_at|date:"F d, Y H:i" }}</p>
+
+         
+            {% csrf_token %}
+            
+            <span class="countdown" id="countdown-{{ req.id }}"></span>
+          </form>
+        </div>
+      {% endif %}
+    {% empty %}
+      <p>No maintenance issues reported yet!</p>
+    {% endfor %}
+
+<script>
+  // Track timers per request  
+  const timers = {};
+
+  function onStatusChange(id) {
+    // submit form to server
+    document.querySelector(`#req-${id} form`).submit();
+
+    // if status set to InProgress, start countdown
+    const sel = document.getElementById(`status-${id}`);
+    if (sel.value === 'In Progress') startTimer(id);
+    else stopTimer(id);
+  }
+
+  function startTimer(id) {
+    const card = document.getElementById(`req-${id}`);
+    const createdAt = new Date(card.dataset.createdAt).getTime();
+    const deadline = createdAt + 60 * 60 * 1000; // +1h
+
+    stopTimer(id); // clear if exists
+
+    timers[id] = setInterval(() => {
+      const now = Date.now();
+      let diff = deadline - now;
+      const display = document.getElementById(`countdown-${id}`);
+      const badge = document.getElementById(`badge-${id}`);
+
+      if (diff <= 0) {
+        clearInterval(timers[id]);
+        display.textContent = 'Escalated';
+        badge.textContent = 'Escalated';
+        badge.className = 'status Escalated';
+        // Optionally: send background fetch to update on server
+      } else {
+        // format mm:ss
+        const m = Math.floor(diff / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        display.textContent = `Time left: ${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+      }
+    }, 1000);
+  }
+
+  function stopTimer(id) {
+    if (timers[id]) {
+      clearInterval(timers[id]);
+      document.getElementById(`countdown-${id}`).textContent = '';
+    }
+  }
+
+  // Initialize any In Progress ones on load
+  window.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('select[id^="status-"]').forEach(sel => {
+      const id = sel.id.split('-')[1];
+      if (sel.value === 'In Progress') startTimer(id);
+    });
+  });
+</script>
+
+</body>
+</html>

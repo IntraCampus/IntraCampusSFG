@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book a Service - Smart Campus</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color: #f9fbfd;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .header {
+      background-color: #0077cc;
+      color: white;
+      padding: 20px;
+      font-size: 32px;
+      text-align: center;
+    }
+
+    .navbar {
+      background-color: #eef6fb;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar a {
+      text-decoration: none;
+      color: #0077cc;
+      font-weight: bold;
+      margin-right: 15px;
+    }
+
+    .navbar a:hover {
+      background-color: #0077cc;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 4px;
+    }
+
+    .main-content {
+      flex: 1;
+      margin: 40px 200px;
+      padding: 30px 20px;
+      max-width: 900px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+      color: #0077cc;
+      border-bottom: 2px solid #0077cc;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    form input,
+    form select,
+    form textarea {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    form textarea {
+      resize: vertical;
+    }
+
+    .btn-submit {
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 1rem;
+      width: 100%;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-submit:hover {
+      background-color: #005fa3;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        margin: 20px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">Smart Campus - Book a Service</div>
+
+  <div class="navbar">
+    <div class="navbar">
+      {% if request.user.profile.role == 'admin' %}
+      <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+      {% elif request.user.profile.role == 'teacher' %}
+        <a href="{% url 'teacher_dashboard' %}">Dashboard</a>
+      {% elif request.user.profile.role == 'student' %}
+        <a href="{% url 'student_dashboard' %}">Dashboard</a>
+      {% endif %}
+      <a href="{% url 'logout' %}">Logout</a>
+    </div>
+    <div>
+      <a href="{% url 'logout' %}">Logout</a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <h2>Book a Service</h2>
+
+    <form method="post">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label for="id_service_type">Type of Service</label>
+        {{ form.service_type }}
+      </div>
+
+      <div class="form-group">
+        <label for="id_room_or_person">Room / Person</label>
+        {{ form.room_or_person }}
+      </div>
+
+      <div class="form-group">
+        <label for="id_date">Date</label>
+        {{ form.date }}
+      </div>
+
+      <div class="form-group">
+        <label for="id_start_time">Start Time</label>
+        {{ form.start_time }}
+      </div>
+
+      <div class="form-group">
+        <label for="id_end_time">End Time</label>
+        {{ form.end_time }}
+      </div>
+
+      <div class="form-group">
+        <label for="id_reason">Reason (optional)</label>
+        {{ form.reason }}
+      </div>
+
+      <button type="submit" class="btn-submit">Submit Booking</button>
+    </form>
+  </div>
+
+</body>
+</html>

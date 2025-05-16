@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class Schedules</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Classs Scheduled</h1>
+
+    {% if schedules %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Class Name</th>
+                    <th>Teacher</th>
+                    <th>Students</th>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for schedule in schedules %}
+                    <tr>
+                        <td>{{ schedule.class_name }}</td>
+                        <td>
+                            {% if schedule.teacher %}
+                                {{ schedule.teacher.username }}
+                            {% else %}
+                                Not Assigned
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% for student in schedule.students.all %}
+                                {{ student.username }}{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                                No students enrolled
+                            {% endfor %}
+                        </td>
+                        <td>{{ schedule.date }}</td>
+                        <td>{{ schedule.start_time }}</td>
+                        <td>{{ schedule.end_time }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No class schedules available.</p>
+    {% endif %}
+    <a href="{% url 'admin_dashboard' %}" class="back-button">← Back to Admin Dashboard</a>
+</body>
+</html>

@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Schedule a Class</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background:#f0f2f5; margin:0; padding:0; }
+    .container { max-width:600px; margin:50px auto; background:#fff; padding:30px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+    h1 { text-align:center; color:#333; margin-bottom:20px; }
+    form label { font-weight:bold; display:block; margin-top:15px; }
+    form input, form select, form textarea { width:100%; padding:10px; margin-top:5px; border:1px solid #ccc; border-radius:5px; }
+    form button { margin-top:20px; width:100%; padding:12px; background:#0077cc; color:white; border:none; border-radius:5px; cursor:pointer; font-size:16px; }
+    form button:hover { background:#005fa3; }
+    a { display:block; text-align:center; margin-top:20px; color:#0077cc; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .errorlist { color: red; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Schedule a Class</h1>
+  
+  <form method="POST" action="{% url 'create_class_schedule' %}">
+    {% csrf_token %}
+
+    {% if form.errors %}
+      <div class="errorlist">
+        {{ form.errors }}
+      </div>
+    {% endif %}
+    
+    <label for="id_subject_name">Subject Name</label>
+    {{ form.subject_name }}
+    
+    <label for="id_teacher">Teacher</label>
+    {{ form.teacher }}
+    
+    <label for="id_students">Students</label>
+    {{ form.students }}
+    
+    <label for="id_room">Room</label>
+    {{ form.room }}
+    
+    <label for="id_date">Date</label>
+    {{ form.date }}
+    
+    <label for="id_start_time">Start Time</label>
+    {{ form.start_time }}
+    
+    <label for="id_end_time">End Time</label>
+    {{ form.end_time }}
+    
+    <label for="id_description">Description (optional)</label>
+    {{ form.description }}
+    
+    <button type="submit">Save Schedule</button>
+  </form>
+  
+  <a href="{% url 'admin_dashboard' %}">← Back to Dashboard</a>
+</div>
+
+</body>
+</html>

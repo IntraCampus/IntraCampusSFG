@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Booked Services - Smart Campus</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color: #f9fbfd;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .header {
+      background-color: #0077cc;
+      color: white;
+      padding: 20px;
+      font-size: 32px;
+      text-align: center;
+    }
+
+    .navbar {
+      background-color: #eef6fb;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar a {
+      text-decoration: none;
+      color: #0077cc;
+      font-weight: bold;
+      margin-right: 15px;
+    }
+
+    .navbar a:hover {
+      background-color: #0077cc;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 4px;
+    }
+
+    .main-content {
+      flex: 1;
+      margin: 40px 200px;
+      padding: 30px 20px;
+      max-width: 900px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+      color: #0077cc;
+      border-bottom: 2px solid #0077cc;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+    }
+
+    .booking-item {
+      margin-bottom: 20px;
+      padding: 15px 20px;
+      background-color: #eef6fb;
+      border-left: 5px solid #0077cc;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+
+    .booking-item strong {
+      display: block;
+      color: #333;
+    }
+
+    .empty-message {
+      font-style: italic;
+      color: #888;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        margin: 20px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">Smart Campus - Booked Services</div>
+
+  <div class="navbar">
+    <div class="navbar">
+      {% if request.user.profile.role == 'admin' %}
+      <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+      {% elif request.user.profile.role == 'teacher' %}
+        <a href="{% url 'teacher_dashboard' %}">Dashboard</a>
+      {% elif request.user.profile.role == 'student' %}
+        <a href="{% url 'student_dashboard' %}">Dashboard</a>
+      {% endif %}
+      <a href="{% url 'logout' %}">Logout</a>
+    </div>
+    <div>
+      <a href="{% url 'logout' %}">Logout</a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <h2>My Booked Services</h2>
+
+    {% if bookings %}
+      {% for booking in bookings %}
+        <div class="booking-item">
+          <strong>Service:</strong> {{ booking.service_name }}
+          <strong>Date:</strong> {{ booking.date }}
+          <strong>Status:</strong> {{ booking.status }}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="empty-message">You have not booked any services yet.</p>
+    {% endif %}
+  </div>
+
+</body>
+</html>

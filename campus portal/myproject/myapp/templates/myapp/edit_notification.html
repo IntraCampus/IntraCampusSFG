@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Notification</title>
+</head>
+<body>
+    <h2>Edit Notification</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Message:</label><br>
+        <textarea name="message" rows="5" cols="50">{{ notification.message }}</textarea><br><br>
+
+        <label>Visibility:</label><br>
+        <select name="visibility">
+            <option value="public" {% if notification.visibility == 'public' %}selected{% endif %}>Public</option>
+            <option value="student" {% if notification.visibility == 'student' %}selected{% endif %}>Student</option>
+            <option value="teacher" {% if notification.visibility == 'teacher' %}selected{% endif %}>Teacher</option>
+            <option value="maintenance" {% if notification.visibility == 'maintenance' %}selected{% endif %}>Maintenance</option>
+        </select><br><br>
+
+        <button type="submit">Save Changes</button>
+    </form>
+    <br>
+    <a href="{% url 'admin_dashboard' %}">Back to Dashboard</a>
+</body>
+</html>

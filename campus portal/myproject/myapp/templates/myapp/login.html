@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Campus Services Portal - Login</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f9fbfd;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .hero {
+      background: linear-gradient(to right, #0077cc, #66ccff);
+      color: white;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+
+    .hero a {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 12px 25px;
+      background: white;
+      color: #0077cc;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .hero a:hover {
+      background: #e0f3ff;
+    }
+
+    .login-box {
+      background-color: #0077cc;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      width: 350px;
+      text-align: center;
+      box-sizing: border-box;
+      margin: auto;
+      margin-top: 100px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      text-align: left;
+      font-size: 14px;
+      color: white;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 18px;
+      border: 2px solid #fff;
+      border-radius: 6px;
+      background-color: #f9f9f9;
+      color: #333;
+      font-size: 14px;
+      transition: border 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: #0077cc;
+      outline: none;
+    }
+
+    button {
+      background-color: #fff;
+      color: #0077cc;
+      font-weight: bold;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #66ccff;
+      color: #fff;
+    }
+
+    .footer {
+      background-color: #0077cc;
+      color: white;
+      text-align: center;
+      padding: 25px 20px;
+      margin-top: auto;
+      position: relative;
+    }
+
+    .datetime {
+      margin-top: 15px;
+      font-size: 16px;
+    }
+
+    .clock {
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: 32px;
+      }
+      .clock {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero Section for Login -->
+  <div class="hero">
+    <h1>Welcome to Smart Campus</h1>
+    <p>Manage your timetable, room bookings, announcements and more – all in one place.</p>
+    <a href="{% url 'home' %}">home</a>
+  </div>
+
+  <!-- Login Form -->
+  <div class="login-box">
+    <h2>Login to Smart Campus</h2>
+
+
+
+    <form method="POST">
+        {% csrf_token %}
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required placeholder="Enter your username">
+
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required placeholder="Enter your password">
+
+        <label for="role">Select Role:</label>
+        <select name="role" id="role" required>
+            <option value="">-- Choose Role --</option>
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+            <option value="admin">Admin</option>
+            <option value="maintenance">Maintenance</option>
+        </select>
+
+        <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <!-- Footer Section with Date and Time -->
+  <div class="footer">
+    <div>&copy; {{ year|default:"2025" }} Smart Campus Services Portal. All rights reserved.</div>
+    <div class="datetime">
+      <div id="date"></div>
+      <div class="clock" id="clock"></div>
+    </div>
+  </div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('date').textContent = now.toLocaleDateString(undefined, options);
+      document.getElementById('clock').textContent = now.toLocaleTimeString();
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+
+</body>
+</html>

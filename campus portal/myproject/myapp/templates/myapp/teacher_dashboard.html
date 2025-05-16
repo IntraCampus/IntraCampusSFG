@@ -1,0 +1,206 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Dashboard - Smart Campus</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Your existing CSS stays the same */
+    body { font-family: 'Inter', sans-serif; margin: 0; background-color: #f9fbfd; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
+    .header { background-color: #0077cc; color: white; padding: 20px; font-size: 32px; text-align: center; }
+    .navbar { background-color: #eef6fb; padding: 10px 20px; display: flex; justify-content: center; gap: 20px; }
+    .navbar a { text-decoration: none; color: #0077cc; font-weight: bold; }
+    .navbar a:hover { color: white; background-color: #0077cc; border-radius: 4px; padding: 6px 10px; }
+    .content { display: flex; padding: 20px; gap: 30px; }
+    .sidebar { width: 220px; padding: 20px; background-color: white; border-right: 1px solid #ddd; }
+    .sidebar h3 { margin-top: 0; color: #0077cc; }
+    .sidebar a { display: block; margin: 10px 0; color: #333; text-decoration: none; cursor: pointer; }
+    .sidebar a:hover { color: #0077cc; }
+    .main-content { flex: 1; padding: 20px; background-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 8px; }
+    .profile { text-align: right; margin-bottom: 20px; }
+    .profile a { color: #0077cc; text-decoration: none; }
+    .form-section { margin-top: 30px; padding: 20px; background-color: #eef6fb; border: 1px solid #ddd; border-radius: 6px; }
+    .form-section h3 { margin-top: 0; color: #0077cc; }
+    .form-section label { display: block; margin-top: 10px; font-weight: bold; }
+    .form-section input, .form-section select, .form-section textarea { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
+    .form-section button { margin-top: 15px; background-color: #0077cc; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; }
+    .form-section button:hover { background-color: #66ccff; }
+    .list-section { margin-top: 30px; }
+    .list-section h2 { color: #0077cc; border-bottom: 2px solid #0077cc; padding-bottom: 5px; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; background-color: white; box-shadow: 0 0 5px rgba(0, 0, 0, 0.05); }
+    th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+    th { background-color: #eef6fb; }
+    a.download { color: #0077cc; text-decoration: none; }
+    a.download:hover { text-decoration: underline; }
+    @media (max-width: 600px) {
+      .header { font-size: 24px; }
+      .content { flex-direction: column; }
+      .sidebar { width: 100%; padding: 10px; }
+      .main-content { padding: 15px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="header">Smart Campus - Student Dashboard</div>
+
+<div class="navbar">
+  <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+  <a href="{% url 'logout' %}">Logout</a>
+</div>
+
+<div class="content">
+  <div class="sidebar">
+    <h3>Student Menu</h3>
+    <a href="#" onclick="showCreateTimetableForm(); return false;">Upload Timetable</a>
+    <a href="#" onclick="showCreateNotificationForm(); return false;">Add Notification</a>
+    <a href="#" onclick="showSendAlertForm(); return false;">Send Maintenance Request</a>
+  </div>
+
+  <div class="main-content">
+    <div class="profile">
+      <a href="{% url 'profile' %}">My Profile</a>
+    </div>
+
+    <!-- Upload Timetable Form -->
+    <div id="create_timetable" class="form-section" style="display: none;">
+      <h3>Upload Timetable</h3>
+      <form method="POST" enctype="multipart/form-data" action="{% url 'create_timetable' %}">
+        {% csrf_token %}
+        <label>Choose File (PDF)</label>
+        <input type="file" name="file" accept=".pdf" required>
+        <button type="submit">Upload</button>
+      </form>
+    </div>
+
+    <!-- Create Notification Form -->
+    <div id="create_notification" class="form-section" style="display: none;">
+      <h3>Create Notification</h3>
+      <form method="POST" action="{% url 'create_notification' %}">
+        {% csrf_token %}
+        <label>Message</label>
+        <textarea name="message" rows="4" required></textarea>
+        <button type="submit">Post Notification</button>
+      </form>
+    </div>
+
+    <!-- Send Maintenance Request Form -->
+    <div id="send_alert_form" class="form-section" style="display: none;">
+      <h3>Send Maintenance Request</h3>
+      <form method="POST" action="{% url 'create_maintenance_request' %}">
+        {% csrf_token %}
+        <label>Message</label>
+        <textarea name="description" rows="4" placeholder="Describe the issue..." required></textarea>
+
+        <label>Location (optional)</label>
+        <input name="location" type="text" placeholder="e.g. Building A, Room 101">
+
+        <button type="submit">Send Request</button>
+      </form>
+    </div>
+
+    <!-- Uploaded Timetables -->
+    <div class="list-section">
+      <h2>Uploaded Study Material</h2>
+      <table>
+        <tr><th>Uploaded At</th><th>File</th></tr>
+        {% for tt in timetables %}
+          <tr>
+            <td>{{ tt.uploaded_at|date:"M d, Y H:i" }}</td>
+            <td><a class="download" href="{{ tt.file.url }}" download>Download</a></td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="2">No study available.</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <!-- Latest Announcements -->
+    <div class="list-section">
+      <h2>Latest Announcements</h2>
+      <table>
+        <tr><th>Message</th><th>Created At</th><th>Actions</th></tr>
+        {% for nf in notifications %}
+          <tr>
+            <td>{{ nf.message }}</td>
+            <td>{{ nf.created_at|date:"M d, Y H:i" }}</td>
+            <td>
+              <a href="{% url 'edit_notification' nf.id %}" style="color: green; font-weight: bold;">Edit</a> |
+  <form method="POST" action="{% url 'delete_notification' nf.id %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="link-button" style="color: red; background: none; border: none; padding: 0; font-weight: bold; cursor: pointer;" onclick="return confirm('Are you sure?');">Delete</button>
+  </form>
+                
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="3">No notifications found.</td></tr>
+        {% endfor %}
+      </table>
+      </table>
+    </div>
+
+    <!-- Maintenance Requests -->
+<div class="list-section">
+  <h2>Maintenance Requests</h2>
+  <table>
+    <tr>
+      <th>Requester</th>
+      <th>Message</th>
+      <th>Location</th>
+      <th>Status</th>
+      <th>Created At</th>
+      <th>Actions</th>
+    </tr>
+    {% for req in maintenance_requests %}
+      {% if req.requester == request.user %}
+        <tr>
+          <td>{{ req.requester.username }}</td>
+          <td>{{ req.message }}</td>
+          <td>{{ req.location|default:"—" }}</td>
+          <td>{{ req.status }}</td>
+          <td>{{ req.created_at|date:"M d, Y H:i" }}</td>
+          <td>
+            
+              <a href="#" style="color: green; font-weight: bold;">Edit</a> |
+              <a href="{% url 'delete_maintenance_request' req.id %}" onclick="return confirm('Delete this request?');" style="color: red; font-weight: bold;">Delete</a>
+      
+          </td>
+        </tr>
+      {% endif %}
+    {% empty %}
+      <tr><td colspan="6">No maintenance requests.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+</div>
+
+<script>
+  function hideAllForms() {
+    document.getElementById('create_timetable').style.display = 'none';
+    document.getElementById('create_notification').style.display = 'none';
+    document.getElementById('send_alert_form').style.display = 'none';
+  }
+
+  function showCreateTimetableForm() {
+    hideAllForms();
+    document.getElementById('create_timetable').style.display = 'block';
+  }
+
+  function showCreateNotificationForm() {
+    hideAllForms();
+    document.getElementById('create_notification').style.display = 'block';
+  }
+
+  function showSendAlertForm() {
+    hideAllForms();
+    document.getElementById('send_alert_form').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>

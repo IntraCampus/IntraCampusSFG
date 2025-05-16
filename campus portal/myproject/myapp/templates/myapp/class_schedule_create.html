@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Class Schedule</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; margin:0; background:#f9fbfd; }
+    .container { max-width:600px; margin:40px auto; background:#fff; padding:30px; box-shadow:0 0 10px rgba(0,0,0,0.1); border-radius:8px; }
+    h1 { color:#0077cc; text-align:center; }
+    form label { display:block; margin-top:15px; font-weight:bold; }
+    form input, form select { width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:4px; }
+    form button { margin-top:20px; background:#0077cc; color:#fff; padding:10px 20px; border:none; border-radius:4px; cursor:pointer; }
+    form button:hover { background:#66ccff; }
+    a { text-decoration:none; color:#0077cc; display:block; text-align:center; margin-top:20px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Create Class Schedule</h1>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Schedule</button>
+  </form>
+
+  <a href="{% url 'admin_dashboard' %}">← Back to Dashboard</a>
+</div>
+
+</body>
+</html>

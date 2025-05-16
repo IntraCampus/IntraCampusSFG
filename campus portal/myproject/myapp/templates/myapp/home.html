@@ -1,0 +1,187 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Campus Services Portal</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f9fbfd;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .hero {
+      background: linear-gradient(to right, #0077cc, #66ccff);
+      color: white;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+
+    .hero a {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 12px 25px;
+      background: white;
+      color: #0077cc;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .hero a:hover {
+      background: #e0f3ff;
+    }
+
+    .section {
+      padding: 60px 40px;
+      background-color: #eef6fb;
+    }
+
+    .section h2 {
+      text-align: center;
+      color: #0077cc;
+      margin-bottom: 30px;
+    }
+
+    .features,
+    .roles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .card h3 {
+      color: #0077cc;
+      margin-bottom: 10px;
+    }
+
+    .footer {
+      background-color: #0077cc;
+      color: white;
+      text-align: center;
+      padding: 25px 20px;
+      margin-top: auto;
+      position: relative;
+    }
+
+    .datetime {
+      margin-top: 15px;
+      font-size: 16px;
+    }
+
+    .clock {
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: 32px;
+      }
+      .clock {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <h1>Welcome to Smart Campus</h1>
+    <p>Manage your timetable, room bookings, announcements and more – all in one place.</p>
+    <a href="{% url 'login' %}">Login</a>
+  </div>
+
+  <div class="section">
+    <h2>Why Use Smart Campus?</h2>
+    <div class="features">
+      <div class="card">
+        <h3>📅 Timetables</h3>
+        <p>Students and teachers can view or upload timetables easily and stay on schedule.</p>
+      </div>
+      <div class="card">
+        <h3>🏫 Room Bookings</h3>
+        <p>Book available rooms on campus for classes, study groups, or meetings.</p>
+      </div>
+      <div class="card">
+        <h3>🛠 Maintenance</h3>
+        <p>Request and track maintenance issues to keep the campus running smoothly.</p>
+      </div>
+      <div class="card">
+        <h3>📢 Announcements</h3>
+        <p>Receive important updates and notifications from campus administrators.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="background: #ffffff;">
+    <h2>User Roles</h2>
+    <div class="roles">
+      <div class="card">
+        <h3>👩‍🏫 Teachers</h3>
+        <p>Upload timetables, post notifications, and request maintenance support.</p>
+      </div>
+      <div class="card">
+        <h3>🎓 Students</h3>
+        <p>View schedules, announcements, post comments, and report issues.</p>
+      </div>
+      <div class="card">
+        <h3>🔧 Maintenance</h3>
+        <p>View and manage service requests to ensure smooth campus operations.</p>
+      </div>
+      <div class="card">
+        <h3>🛡 Admin</h3>
+        <p>Create users, manage content, and oversee all campus service activities.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>&copy; {{ year|default:"2025" }} Smart Campus Services Portal. All rights reserved.</div>
+    <div class="datetime">
+      <div id="date"></div>
+      <div class="clock" id="clock"></div>
+    </div>
+  </div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('date').textContent = now.toLocaleDateString(undefined, options);
+      document.getElementById('clock').textContent = now.toLocaleTimeString();
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+
+</body>
+</html>

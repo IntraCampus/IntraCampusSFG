@@ -1,0 +1,312 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Smart Campus</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; margin:0; background:#f9fbfd; color:#333; display:flex; flex-direction:column; min-height:100vh; }
+    .header { background:#0077cc; color:#fff; padding:20px; text-align:center; font-size:32px; }
+    .navbar { background:#eef6fb; padding:10px; display:flex; justify-content:center; gap:20px; }
+    .navbar a { text-decoration:none; color:#0077cc; font-weight:bold; }
+    .content { display:flex; padding:20px; gap:30px; }
+    .sidebar { width:220px; padding:20px; background:#fff; border-right:1px solid #ddd; }
+    .sidebar h3 { margin-top:0; color:#0077cc; }
+    .sidebar a { display:block; margin:10px 0; color:#333; text-decoration:none; cursor:pointer; }
+    .sidebar a:hover { color:#0077cc; }
+    .main-content { flex:1; padding:20px; background:#fff; box-shadow:0 0 10px rgba(0,0,0,0.1); border-radius:8px; }
+    .profile { text-align:right; margin-bottom:20px; }
+    .profile a { color:#0077cc; text-decoration:none; }
+    .form-section { margin-top:30px; padding:20px; background:#eef6fb; border:1px solid #ddd; border-radius:6px; }
+    .form-section h3 { margin-top:0; color:#0077cc; }
+    .form-section label { display:block; margin-top:10px; font-weight:bold; }
+    .form-section input, .form-section select, .form-section textarea {
+      width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:4px;
+    }
+    .form-section button {
+      margin-top:15px; background:#0077cc; color:#fff; padding:10px 15px;
+      border:none; border-radius:4px; cursor:pointer;
+    }
+    .form-section button:hover { background:#66ccff; }
+    .collapsible {
+      background:#0077cc; color:white; cursor:pointer; padding:14px; width:100%;
+      border:none; text-align:left; outline:none; font-size:18px; border-radius:5px; margin-top:20px;
+    }
+    .active, .collapsible:hover { background-color:#005fa3; }
+    .content-section {
+      padding:0 18px; display:none; overflow:hidden; margin-top:10px; border:1px solid #ddd; border-radius:6px; background:#eef6fb;
+    }
+    table { width:100%; border-collapse:collapse; margin-top:10px; background:#fff; box-shadow:0 0 5px rgba(0,0,0,0.05); }
+    th, td { padding:10px; border:1px solid #ddd; text-align:left; }
+    th { background:#eef6fb; }
+    a.download { color:#0077cc; text-decoration:none; }
+    a.download:hover { text-decoration:underline; }
+    button.link-button { background:none; border:none; color:red; cursor:pointer; padding:0; font:inherit; text-decoration:underline; }
+    @media (max-width:600px) {
+      .header { font-size:24px; }
+      .content { flex-direction:column; }
+      .sidebar { width:100%; padding:10px; }
+      .main-content { padding:15px; }
+      .message-container {
+  margin-bottom: 20px;
+}
+.message {
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-top: 10px;
+  font-weight: bold;
+}
+.message.error {
+  background-color: #fdd;
+  color: #a00;
+  border: 1px solid #a00;
+}
+.message.success {
+  background-color: #dfd;
+  color: #060;
+  border: 1px solid #060;
+}
+
+    }
+    .message.error {
+
+  color: #a00;               /* Dark red text */
+
+}
+  </style>
+</head>
+<body>
+
+<div class="header">Admin Dashboard</div>
+
+<div class="navbar">
+  <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+  <a href="{% url 'logout' %}">Logout</a>
+</div>
+
+<div class="content">
+  <div class="sidebar">
+    <h3>Admin Actions</h3>
+    <a href="#" onclick="showCreateUserForm(); return false;">Create User</a>
+    <a href="#" onclick="showCreateTimetableForm(); return false;">Upload Timetable</a>
+    <a href="#" onclick="showCreateNotificationForm(); return false;">Add Notification</a>
+    <a href="#" onclick="showSendAlertForm(); return false;">Send Maintenance Alert</a>
+    <a href="#" onclick="showScheduleClass(); return false;">Schedule Class</a>
+  </div>
+
+  <div class="main-content">
+    <div class="profile">
+      <a href="{% url 'profile' %}">My Profile</a>
+    </div>
+    <div class="message-container">
+      {% for message in messages %}
+        <p id="error-message" class="message {{ message.tags }}">{{ message }}</p>
+      {% endfor %}
+    </div>
+    <!-- Forms -->
+    <div id="create_user" class="form-section" style="display:none;">
+      <h3>Create New User</h3>
+      <form method="POST" action="{% url 'create_user' %}">
+        {% csrf_token %}
+        <label>Username</label>
+        <input type="text" name="username" required>
+        <label>Password</label>
+        <input type="password" name="password" required>
+        <label>Role</label>
+        <select name="role" required>
+          <option value="student">Student</option>
+          <option value="teacher">Teacher</option>
+          <option value="maintenance">Maintenance</option>
+        </select>
+        <button type="submit">Create User</button>
+      </form>
+    </div>
+
+    <div id="create_timetable" class="form-section" style="display:none;">
+      <h3>Upload Timetable</h3>
+      <form method="POST" enctype="multipart/form-data" action="{% url 'create_timetable' %}">
+        {% csrf_token %}
+        <label>Choose File (PDF)</label>
+        <input type="file" name="file" accept=".pdf" required>
+        <button type="submit">Upload</button>
+      </form>
+    </div>
+
+    <div id="create_notification" class="form-section" style="display:none;">
+      <h3>Create Notification</h3>
+      <form method="POST" action="{% url 'create_notification' %}">
+        {% csrf_token %}
+        <label>Message</label>
+        <textarea name="message" rows="4" required></textarea>
+        <button type="submit">Post Notification</button>
+      </form>
+    </div>
+
+    <div id="send_alert" class="form-section" style="display:none;">
+      <h3>Send Maintenance Alert</h3>
+      <form method="POST" action="{% url 'create_maintenance_request' %}">
+        {% csrf_token %}
+        <label>Message</label>
+        <textarea name="description" rows="4" required></textarea>
+        <label>Location (optional)</label>
+        <input name="location" type="text" placeholder="e.g. Building A, Room 101">
+        <button type="submit">Send Alert</button>
+      </form>
+    </div>
+
+    <!-- Collapsible Sections -->
+
+    <button class="collapsible">Existing Users</button>
+    <div class="content-section">
+      <table>
+        <tr><th>Username</th><th>Role</th><th>Email</th></tr>
+        {% for u in users %}
+          <tr>
+            <td>{{ u.username }}</td>
+            <td>{{ u.profile.role|title }}</td>
+            <td>{{ u.email|default:"—" }}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="3">No users found.</td></tr>
+        {% endfor %}
+      </table>
+
+    </div>
+    <button class="collapsible">Study Content</button>
+    <div class="content-section">
+      <table>
+        <tr><th>Uploaded At</th><th>File</th></tr>
+        {% for tt in timetables %}
+          <tr>
+            <td>{{ tt.uploaded_at|date:"M d, Y H:i" }}</td>
+            <td><a class="download" href="{{ tt.file.url }}" download>Download</a></td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="2">No timetables available.</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <button class="collapsible">Notifications</button>
+    <div class="content-section">
+      <table>
+        <tr><th>Message</th><th>Created At</th><th>Actions</th></tr>
+        {% for nf in notifications %}
+          <tr>
+            <td>{{ nf.message }}</td>
+            <td>{{ nf.created_at|date:"M d, Y H:i" }}</td>
+            <td>
+              <a href="{% url 'edit_notification' nf.id %}" style="color:green;">Edit</a> |
+              <form method="POST" action="{% url 'delete_notification' nf.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="link-button" onclick="return confirm('Are you sure?');">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="3">No notifications found.</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <button class="collapsible">Maintenance Requests</button>
+    <div class="content-section">
+      <table>
+        <tr><th>Requester</th><th>Message</th><th>Location</th><th>Status</th><th>Created At</th><th>Updated At</th><th>Actions</th></tr>
+        {% for req in maintenance_requests %}
+          <tr>
+            <td>{{ req.requester.username }}</td>
+            <td>{{ req.message }}</td>
+            <td>{{ req.location|default:"—" }}</td>
+            <td>{{ req.status }}</td>
+            <td>{{ req.created_at|date:"M d, Y H:i" }}</td>
+            <td>{{ req.updated_at|date:"M d, Y H:i" }}</td>
+        
+            <td>
+              <a href="#">Edit</a> |
+              <form method="POST" action="{% url 'delete_maintenance_request' req.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="link-button">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="7">No maintenance requests.</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <button class="collapsible">Class Schedules</button>
+    <div class="content-section">
+      <a href="{% url 'create_class_schedule' %}" style="margin:10px 0; display:inline-block; background:#0077cc; color:white; padding:8px 15px; border-radius:4px; text-decoration:none;">Create New Class Schedule</a>
+      <table>
+        <tr><th>Class Name</th><th>Teacher</th><th>Date</th><th>Start Time</th><th>End Time</th></tr>
+        {% for sched in schedules %}
+          <tr>
+            <td>{{ sched.subject_name }}</td>
+            <td>{{ sched.teacher.username }}</td>
+            <td>{{ sched.date }}</td>
+            <td>{{ sched.start_time }}</td>
+            <td>{{ sched.end_time }}</td>
+            <td>
+            </td>
+            
+            
+          </tr>
+        {% empty %}
+          <tr><td colspan="5">No scheduled classes.</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+    <button class="collapsible" onclick="window.location.href='{% url 'view_booked_services' %}'">Booked Services</button>
+    <button class="collapsible" onclick="window.location.href='{% url 'system_overview' %}'">System Overview</button>
+  
+
+<div class="content-section">
+  <h2 onclick="toggleSection('view_booked_services')">Book Services</h2>
+
+  <a href="{% url 'view_booked_services' %}">View All Booked Services</a>
+
+<div id="view_booked_services" class="collapsible-content">
+
+ 
+</div>
+
+  </div>
+</div>
+
+<script>
+  function hideAllForms() {
+    ['create_user','create_timetable','create_notification','send_alert']
+      .forEach(id => document.getElementById(id).style.display = 'none');
+  }
+  function showCreateUserForm()        { hideAllForms(); document.getElementById('create_user').style.display = 'block'; }
+  function showCreateTimetableForm()   { hideAllForms(); document.getElementById('create_timetable').style.display = 'block'; }
+  function showCreateNotificationForm(){ hideAllForms(); document.getElementById('create_notification').style.display = 'block'; }
+  function showSendAlertForm()         { hideAllForms(); document.getElementById('send_alert').style.display = 'block'; }
+  function showScheduleClass()         { hideAllForms(); document.getElementById('create_class_schedule').style.display = 'block'; }
+
+  // Collapsible sections
+  const collapsibles = document.getElementsByClassName("collapsible");
+  for (let i = 0; i < collapsibles.length; i++) {
+    collapsibles[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      const content = this.nextElementSibling;
+      if (content.style.display === "block") {
+        content.style.display = "none";
+      } else {
+        content.style.display = "block";
+      }
+    });
+      // Check if there is an error message
+  const errorMessage = document.getElementById('error-message');
+  if (errorMessage) {
+    // Hide the error message after 3 seconds
+    setTimeout(() => {
+      errorMessage.style.display = 'none';
+    }, 3000); // 3000ms = 3 seconds
+  }
+  }
+</script>
+</body>
+</html>

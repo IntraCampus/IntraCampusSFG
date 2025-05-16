@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Notification - Smart Campus</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #005fa3;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      color: #333333;
+    }
+
+    textarea, select {
+      padding: 10px;
+      border: 1px solid #cccccc;
+      border-radius: 5px;
+      font-size: 14px;
+      resize: vertical;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    button {
+      background-color: #005fa3;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #007acc;
+    }
+
+    .cancel-btn {
+      background-color: #cccccc;
+      margin-right: 10px;
+    }
+
+    .cancel-btn:hover {
+      background-color: #aaaaaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Send Notification</h1>
+    <form method="POST" action="{% url 'create_notification' %}">
+      {% csrf_token %}
+      <label for="message">Message:</label>
+      <textarea id="message" name="message" rows="5" placeholder="Type your notification here..." required></textarea>
+
+      <label for="visibility">Visibility:</label>
+      <select id="visibility" name="visibility">
+        <option value="public">Public</option>
+        <option value="private">Private</option>
+      </select>
+
+      <div class="button-group">
+        <button type="button" class="cancel-btn" onclick="window.history.back()">Cancel</button>
+        <button type="submit">Send</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,193 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Smart Campus</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    .header {
+      background-color: #ff5e78;
+      color: white;
+      padding: 20px;
+      font-size: 26px;
+      font-weight: 600;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .navbar {
+      background-color: #ffe4eb;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .navbar a {
+      text-decoration: none;
+      color: #ff5e78;
+      font-weight: 600;
+    }
+
+    .main-content {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .profile {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+
+    .profile a {
+      color: #ff5e78;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .list-section {
+      margin-top: 40px;
+      background-color: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .list-section h2 {
+      color: #ff5e78;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #ffebef;
+      padding-bottom: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+
+    th {
+      background-color: #ffe4eb;
+      color: #333;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: #f9fafc;
+    }
+
+    a.download {
+      color: #ff5e78;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a.download:hover {
+      text-decoration: underline;
+    }
+
+    .empty-row {
+      color: #888;
+      font-style: italic;
+      text-align: center;
+      padding: 15px;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .main-content {
+        padding: 0 10px;
+      }
+
+      .list-section {
+        padding: 15px;
+      }
+
+      table {
+        font-size: 14px;
+      }
+
+      th, td {
+        padding: 10px 12px;
+      }
+    }
+
+    /* Hover Effects */
+    .navbar a:hover {
+      color: #fff;
+      background-color: #ff5e78;
+      border-radius: 4px;
+      padding: 6px 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">Smart Campus - Admin Dashboard</div>
+  <div class="navbar">
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <a href="{% url 'logout' %}">Logout</a>
+  </div>
+
+  <div class="main-content">
+    <div class="profile">
+      <a href="{% url 'profile' %}">My Profile</a>
+    </div>
+
+    <!-- TIMETABLES -->
+    <div class="list-section">
+      <h2>Uploaded Timetables</h2>
+      <table>
+        <tr><th>Uploaded At</th><th>File</th></tr>
+        {% for tt in timetables %}
+          <tr>
+            <td>{{ tt.uploaded_at|date:"M d, Y H:i" }}</td>
+            <td><a class="download" href="{{ tt.file.url }}" download>Download</a></td>
+          </tr>
+        {% empty %}
+          <tr><td class="empty-row" colspan="2">No timetables available.</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <!-- ANNOUNCEMENTS -->
+    <div class="list-section">
+      <h2>Latest Announcements</h2>
+      <table>
+        <tr><th>Message</th><th>Created At</th></tr>
+        {% for nf in notifications %}
+          <tr>
+            <td>{{ nf.message }}</td>
+            <td>{{ nf.created_at|date:"M d, Y H:i" }}</td>
+          </tr>
+        {% empty %}
+          <tr><td class="empty-row" colspan="2">No announcements found.</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+
+</body>
+</html>

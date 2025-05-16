@@ -1,0 +1,550 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Smart Campus</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color: #f9fbfd;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .header {
+      background-color: #0077cc;
+      color: white;
+      padding: 20px;
+      font-size: 32px;
+      text-align: center;
+    }
+
+    .navbar {
+      background-color: #eef6fb;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-left {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 10px;
+    }
+
+    .navbar a {
+      text-decoration: none;
+      color: #0077cc;
+      font-weight: bold;
+    }
+
+    .navbar a:hover {
+      color: white;
+      background-color: #0077cc;
+      border-radius: 4px;
+      padding: 6px 10px;
+    }
+
+    .btn-link {
+      background-color: white;
+      color: #0077cc;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 2px solid #0077cc;
+      transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+    .btn-link:hover {
+      background-color: red;
+      color: white;
+      border-color: red;
+    }
+
+    .main-content {
+  flex: 1;
+  margin: 40px 300px;
+  padding: 30px 20px;
+  max-width: 1000px;
+}
+
+
+    .list-section {
+      margin-top: 30px;
+      background-color: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .list-section h2 {
+      color: #0077cc;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #0077cc;
+      padding-bottom: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+
+    th {
+      background-color: #eef6fb;
+      color: #333;
+      font-weight: bold;
+    }
+
+    tr:hover {
+      background-color: #f9fafc;
+    }
+
+    a.download {
+      color: #0077cc;
+      text-decoration: none;
+    }
+
+    a.download:hover {
+      text-decoration: underline;
+    }
+
+    .empty-row {
+      color: #888;
+      font-style: italic;
+      text-align: center;
+      padding: 15px;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .nav-left, .nav-right {
+        justify-content: center;
+        margin-top: 10px;
+      }
+
+      .main-content {
+        padding: 0 10px;
+      }
+
+      .list-section {
+        padding: 15px;
+      }
+
+      table {
+        font-size: 14px;
+      }
+
+      th, td {
+        padding: 10px 12px;
+      }
+    }
+    body { 
+  font-family: 'Segoe UI', sans-serif; 
+  margin:0; 
+  background:#f9fbfd; 
+  color:#333; 
+  display:flex; 
+  flex-direction:column; 
+  min-height:100vh; 
+}
+.header { 
+  background:#0077cc; 
+  color:#fff; 
+  padding:20px; 
+  text-align:center; 
+  font-size:32px; 
+}
+.navbar { 
+  background:#eef6fb; 
+  padding:10px; 
+  display:flex; 
+  justify-content:center; 
+  gap:20px; 
+}
+.navbar a { 
+  text-decoration:none; 
+  color:#0077cc; 
+  font-weight:bold; 
+}
+.content { 
+  display:flex; 
+  padding:20px; 
+  gap:30px; 
+}
+.sidebar { 
+  width:220px; 
+  padding:20px; 
+  background:#fff; 
+  border-right:1px solid #ddd; 
+}
+.sidebar h3 { 
+  margin-top:0; 
+  color:#0077cc; 
+}
+.sidebar a { 
+  display:block; 
+  margin:10px 0; 
+  color:#333; 
+  text-decoration:none; 
+  cursor:pointer; 
+}
+.sidebar a:hover { 
+  color:#0077cc; 
+}
+.main-content { 
+  flex:1; 
+  padding:20px; 
+  background:#fff; 
+  box-shadow:0 0 10px rgba(0,0,0,0.1); 
+  border-radius:8px; 
+  overflow-y: auto; 
+}
+.profile { 
+  text-align:right; 
+  margin-bottom:20px; 
+}
+.profile a { 
+  color:#0077cc; 
+  text-decoration:none; 
+}
+.form-section { 
+  margin-top:30px; 
+  padding:20px; 
+  background:#eef6fb; 
+  border:1px solid #ddd; 
+  border-radius:6px; 
+}
+.form-section h3 { 
+  margin-top:0; 
+  color:#0077cc; 
+}
+.form-section label { 
+  display:block; 
+  margin-top:10px; 
+  font-weight:bold; 
+}
+.form-section input, 
+.form-section select, 
+.form-section textarea { 
+  width:100%; 
+  padding:8px; 
+  margin-top:5px; 
+  border:1px solid #ccc; 
+  border-radius:4px; 
+}
+.form-section button { 
+  margin-top:15px; 
+  background:#0077cc; 
+  color:#fff; 
+  padding:10px 15px; 
+  border:none; 
+  border-radius:4px; 
+  cursor:pointer; 
+}
+.form-section button:hover { 
+  background:#66ccff; 
+}
+.list-section { 
+  margin-top:30px; 
+  padding:20px; 
+  background:#fff; 
+  box-shadow:0 0 10px rgba(0,0,0,0.1); 
+  border-radius:8px; 
+  max-height: 400px; 
+  overflow-y: auto; 
+}
+.list-section h2 { 
+  color:#0077cc; 
+  border-bottom:2px solid #0077cc; 
+  padding-bottom:5px; 
+  margin-bottom:20px; 
+}
+table { 
+  width:100%; 
+  border-collapse:collapse; 
+  margin-top:10px; 
+  background:#fff; 
+  box-shadow:0 0 5px rgba(0,0,0,0.05); 
+  table-layout: fixed;
+}
+th, td { 
+  padding:12px; 
+  border:1px solid #ddd; 
+  text-align:left; 
+  word-wrap: break-word; 
+}
+th { 
+  background:#eef6fb; 
+}
+a.download { 
+  color:#0077cc; 
+  text-decoration:none; 
+}
+a.download:hover { 
+  text-decoration:underline; 
+}
+@media (max-width:600px) { 
+  .header { font-size:24px; } 
+  .content { flex-direction:column; } 
+  .sidebar { width:100%; padding:10px; } 
+  .main-content { padding:15px; } 
+}
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.schedule-item {
+  background-color: #eef6fb;
+  border-left: 5px solid #0077cc;
+  padding: 15px 20px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  transition: background-color 0.3s ease;
+}
+
+.schedule-item:hover {
+  background-color: #d6ecf9;
+}
+
+.schedule-item .subject {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0077cc;
+  margin-bottom: 5px;
+}
+
+.schedule-item .details {
+  font-size: 14px;
+  color: #333;
+}
+.collapsible-content {
+  display: none;
+}
+
+h2 {
+  cursor: pointer;
+  user-select: none;
+}
+
+
+  </style>
+</head>
+<body>
+  <div class="header">Smart Campus - Student Dashboard</div>
+
+  <div class="navbar">
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <a href="{% url 'logout' %}">Logout</a>
+    <a href="#" onclick="showSendAlertForm(); return false;">Send Maintenance Alert</a>
+    <a href="{% url 'book_service' %}">Booked Services</a>
+  </div>
+
+  <div class="main-content">
+    <div class="form-section" id="send_alert_form" style="display:none;">
+      <h3>Send Maintenance Request</h3>
+      <form method="POST" action="{% url 'create_maintenance_request' %}">
+        {% csrf_token %}
+        <label>Message</label>
+        <textarea name="description" rows="4" placeholder="Describe the issue..." required></textarea>
+
+        <label>Location (optional)</label>
+        <input name="location" type="text" placeholder="e.g. Building A, Room 101">
+
+        <button type="submit">Send Request</button>
+      </form>
+    </div>
+
+    <!-- STUDY MATERIAL -->
+    <div class="list-section">
+      <h2 onclick="toggleSection('study_material')">Study Material</h2>
+      <div id="study_material" class="collapsible-content">
+        <table>
+          <tr><th>Uploaded At</th><th>File</th></tr>
+          {% for tt in timetables %}
+            <tr>
+              <td>{{ tt.uploaded_at|date:"M d, Y H:i" }}</td>
+              <td><a class="download" href="{{ tt.file.url }}" download>Download</a></td>
+            </tr>
+          {% empty %}
+            <tr><td class="empty-row" colspan="2">No timetables available.</td></tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENTS -->
+    <div class="list-section">
+      <h2 onclick="toggleSection('announcements')">Latest Announcements</h2>
+      <div id="announcements" class="collapsible-content">
+        <table>
+          <tr><th>Message</th><th>Created At</th></tr>
+          {% for nf in notifications %}
+            <tr>
+              <td>{{ nf.message }}</td>
+              <td>{{ nf.created_at|date:"M d, Y H:i" }}</td>
+            </tr>
+          {% empty %}
+            <tr><td class="empty-row" colspan="2">No announcements found.</td></tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+
+    <!-- MAINTENANCE REQUESTS -->
+    <div class="list-section">
+      <h2 onclick="toggleSection('maintenance_requests')">Maintenance Requests</h2>
+      <div id="maintenance_requests" class="collapsible-content">
+        <table>
+          <tr>
+            <th>Requester</th>
+            <th>Message</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Actions</th>
+          </tr>
+          {% for req in maintenance_requests %}
+            {% if req.requester.profile.role == 'student' %}
+              <tr>
+                <td>{{ req.requester.username }}</td>
+                <td>{{ req.message }}</td>
+                <td>{{ req.location|default:"—" }}</td>
+                <td>{{ req.status }}</td>
+                <td>{{ req.created_at|date:"M d, Y H:i" }}</td>
+                <td>
+                  <a href="#">Edit</a> |
+                  <a href="{% url 'delete_maintenance_request' req.id %}" onclick="return confirm('Delete this request?');" style="color: red;">Delete</a>
+                </td>
+              </tr>
+            {% endif %}
+          {% empty %}
+            <tr><td class="empty-row" colspan="6">No maintenance requests.</td></tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+
+    <!-- CLASS SCHEDULE -->
+    <div class="list-section">
+      <h2 onclick="toggleSection('class_schedule')">Your Class Schedule</h2>
+      <div id="class_schedule" class="collapsible-content">
+        {% if class_schedules %}
+          <div class="schedule-list">
+            {% for schedule in class_schedules %}
+              <div class="schedule-item">
+                <div class="subject">{{ schedule.subject_name }}</div>
+                <div class="details">
+                  Room {{ schedule.room }}<br>
+                  {{ schedule.date }} | {{ schedule.start_time }} - {{ schedule.end_time }}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="empty-row">No class schedules assigned yet.</p>
+        {% endif %}
+      </div>
+    </div>
+        <!-- BOOKED SERVICES -->
+        <div class="list-section">
+          <h2 onclick="toggleSection('view_booked_services')">Book Services</h2>
+
+            <a href="{% url 'view_booked_services' %}">View All Booked Services</a>
+    
+          <div id="view_booked_services" class="collapsible-content">
+            <table>
+              <tr>
+                <th>Room</th>
+                <th>Booked By</th>
+                <th>Purpose</th>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+              </tr>
+              {% for book in bookings %}
+              <tr>
+                <td>{{ book.room }}</td>
+                <td>{{ book.user.username }}</td>
+                <td>{{ book.purpose }}</td>
+                <td>{{ book.date }}</td>
+                <td>{{ book.start_time }}</td>
+                <td>{{ book.end_time }}</td>
+              </tr>
+              {% empty %}
+              <tr><td class="empty-row" colspan="6">No services booked.</td></tr>
+              {% endfor %}
+            </table>
+          </div>
+        </div>
+      </div>
+    
+      <script>
+        function showSendAlertForm() {
+          document.getElementById('send_alert_form').style.display = 'block';
+        }
+    
+        function toggleSection(id) {
+          const section = document.getElementById(id);
+          if (section.style.display === 'none' || section.style.display === '') {
+            section.style.display = 'block';
+          } else {
+            section.style.display = 'none';
+          }
+        }
+      </script>
+    </body>
+    </html>
+    
+  </div>
+
+  <style>
+    .collapsible-content {
+      display: none;
+    }
+
+    .list-section h2 {
+      cursor: pointer;
+      user-select: none;
+    }
+  </style>
+
+  <script>
+    function showSendAlertForm() {
+      document.getElementById('send_alert_form').style.display = 'block';
+    }
+
+    function toggleSection(id) {
+      const section = document.getElementById(id);
+      if (section.style.display === 'none' || section.style.display === '') {
+        section.style.display = 'block';
+      } else {
+        section.style.display = 'none';
+      }
+    }
+  </script>
+</body>

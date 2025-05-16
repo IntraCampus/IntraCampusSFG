@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile - Smart Campus</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .profile-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+        .profile-card h2 {
+            margin-bottom: 10px;
+        }
+        .profile-card p {
+            margin: 5px 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #ff5e78;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-card">
+        <h2>{{ user.username }}</h2>
+        <p><strong>Role:</strong> {{ role|title }}</p>
+        <a href="{% url 'admin_dashboard' %}" class="back-link">← Back to Dashboard</a>
+    </div>
+</body>
+</html>
